@@ -9,7 +9,6 @@
 #include <string.h>
 #include "driver.h"
 #include "MG996R.h"
-#include "Bug.h"
 #include "delay.h"
 
 #endif

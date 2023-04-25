@@ -1,10 +1,10 @@
 #include "main.h"
 
 uint8_t Dial_Now=0;   /*用于存储转盘当前位置*/
-uint8_t Dial[8]={1,1,1,1,1,1,1,1};  /*转盘8个位置状�??????????*/
+uint8_t Dial[8]={1,1,1,1,1,1,1,1};  /*转盘8个位置状�???????????*/
 int8_t triangle[3]={0,0,0}; /*三角位置数组*/
 int8_t cylinder[2]={0,0}; /*圆柱位置数组*/
-int8_t square[3]={0,0,0};   /*正方体位置数�??????????*/
+int8_t square[3]={0,0,0};   /*正方体位置数�???????????*/
 int8_t cylinder_min=0,triangle_min=0,square_min=0,tp=0; /*用于存储物块移动路径最小�?*/
 
 uint8_t temp_Arm=0;
@@ -33,26 +33,17 @@ int main()
     Conveyor_ON();
     while(1)
     {
-        if (temp_Arm==1&&temp_Arm_square==1)
+        if (temp_Arm==1)
         {
-            MOVE_2_();
             MOVE_INIT();
-            Conveyor_ON();
+            if (temp_Arm_square==1)
+            {MOVE_1_();}
+            else if (temp_Arm_triangle==1)
+            {MOVE_2_();}
+            else if (temp_Arm_cylinder==1)
+            {MOVE_2_();}
             temp_Arm=0;temp_Arm_square=0;temp_Arm_triangle=0;temp_Arm_cylinder=0;
-        }
-        if (temp_Arm==1&&temp_Arm_triangle==1)
-        {
-            MOVE_1_();
-            MOVE_INIT();
             Conveyor_ON();
-            temp_Arm=0;temp_Arm_square=0;temp_Arm_triangle=0;temp_Arm_cylinder=0;
-        }
-        if (temp_Arm==1&&temp_Arm_cylinder==1)
-        {
-            MOVE_2_();
-            MOVE_INIT();
-            Conveyor_ON();
-            temp_Arm=0;temp_Arm_square=0;temp_Arm_triangle=0;temp_Arm_cylinder=0;
         }
         if (RXD_ReceiveFlag==1)
         {
@@ -87,8 +78,12 @@ int main()
                 }
                 Dial_Now=Dial_Now-cylinder_min;
                 Dial[Dial_Now]=0;
+                if (cylinder_min==0)
+                {
+                    goto first;
+                }
             }
-            else if (strcmp(RxPacket,"3")==0)
+            else if (strcmp(RxPacket,"2")==0)
             {
                 triangle_min=Min_triangle(triangle);
                 if(triangle_min>0)
@@ -112,7 +107,7 @@ int main()
                 Dial_Now=Dial_Now-triangle_min;
                 Dial[Dial_Now]=0;
             }
-            else if (strcmp(RxPacket,"2")==0)
+            else if (strcmp(RxPacket,"3")==0)
             {
                 square_min=Min_square(square);
                 if(square_min>0)
@@ -136,8 +131,8 @@ int main()
                 Dial_Now=Dial_Now-square_min;
                 Dial[Dial_Now]=0;
             }
-            eye=1;
             Set_Dial_PWM(50);
+            first: eye=1;
             RXD_ReceiveFlag=0;
         }
     }
