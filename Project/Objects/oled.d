@@ -1,4 +1,4 @@
-.\objects\oled.o: ..\User\OLED.c
+.\objects\oled.o: ..\src\OLED.c
 .\objects\oled.o: ..\Libraries\CMSIS\stm32f10x.h
 .\objects\oled.o: ..\Libraries\CMSIS\core_cm3.h
 .\objects\oled.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
@@ -28,5 +28,5 @@
 .\objects\oled.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\oled.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h
 .\objects\oled.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
-.\objects\oled.o: ..\User\OLED_Font.h
-.\objects\oled.o: ..\User\OLED.h
+.\objects\oled.o: ..\include\OLED_Font.h
+.\objects\oled.o: ..\include\OLED.h

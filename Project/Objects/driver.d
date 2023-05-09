@@ -39,3 +39,4 @@
 .\objects\driver.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\driver.o: ..\include\MG996R.h
 .\objects\driver.o: ..\include\Conveyor.h
+.\objects\driver.o: ..\include\Dial.h

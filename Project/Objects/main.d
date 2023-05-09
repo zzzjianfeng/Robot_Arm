@@ -41,4 +41,4 @@
 .\objects\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\main.o: ..\include\delay.h
 .\objects\main.o: ..\include\MG996R.h
-.\objects\main.o: ..\include\Bug.h
+.\objects\main.o: ..\include\dsp_key.h

@@ -25,12 +25,12 @@ extern uint32_t Arm2;  /*步进电机脉冲数*/
 /*转盘物件位置定义*/    
 #define cylinder1 0
 #define cylinder2 4
-#define triangle1 1
-#define triangle2 3
-#define triangle3 6
-#define square1 2
-#define square2 5
-#define square3 7
+#define triangle1 2
+#define triangle2 5
+#define triangle3 7
+#define square1 1
+#define square2 3
+#define square3 6
 /*转盘正反转定义*/
 #define Rel 1
 #define Fwd 0

@@ -11,31 +11,20 @@
 #include "MG996R.h"
 #include "Conveyor.h"
 
-/*???????????à??±???*/
 typedef struct 
 {
-	/*?±?°???ú×???*/
 	uint8_t  run_state ; 
-	/*??×?·??ò*/
 	uint8_t  dir ;    
-	/*????????*/
 	int  step_delay;  
-	/*????????*/
 	int  decel_start; 
-	/*????????*/
 	int  decel_val;   
-	/*×???????*/
 	int  min_delay;   
-	/*????????*/
 	int  accel_count; 
 }speedRampData;
 
-/*?????÷*/
 typedef struct 
 {
-	/*×ó±?*/
 	uint8_t  left ; 
-	/*??±?*/
 	uint8_t  right ;
 }motorexit;
 
@@ -45,7 +34,7 @@ typedef struct
 //DRIVER_OE    PC2 
 //STEP_PULSE   PC7 (TIM8_CH2,LCD_RW)
 ******************************************/
-// X轴电机相关引脚定义
+// X轴电机相关引脚定义		丝杆
 #define STEPMOTOR_TIM_CHANNEL1                TIM_Channel_1			  //定时器通道1//X轴
 #define STEPMOTOR_TIM_IT_CC1                  TIM_IT_CC1			    //定时器通道1中断使能位
 #define STEPMOTOR_TIM_FLAG_CC1                TIM_FLAG_CC1			  //定时器通道1中断标志位
@@ -58,7 +47,7 @@ typedef struct
 #define STEP_PULSE_PORT GPIOE
 #define STEP_PULSE_RCC RCC_APB2Periph_GPIOE
 
-// Y轴电机相关引脚定义
+// Y轴电机相关引脚定义		从上往下数第二个电机
 #define STEPMOTOR_TIM_CHANNEL2                TIM_Channel_2			            // 定时器通道2//Y轴
 #define STEPMOTOR_TIM_IT_CC2                  TIM_IT_CC2			              // 定时器通道2中断使能位
 #define STEPMOTOR_TIM_FLAG_CC2                TIM_FLAG_CC2                  // 定时器通道1中断标志位
@@ -93,10 +82,7 @@ typedef struct
 #define stop_YU    GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_1)
 #define stop_ZF    GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_2)
 #define stop_F     GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_3)
-//#define ANNIU
-
-#define POSITIVE	                   1       // 方向：正方向
-#define NEGATIVE	                   -1      // 方向：反方向
+#define stop(x)     GPIO_ReadInputDataBit(GPIOE,PEin(x))
 
 #define CW                0 // 顺时针
 #define CCW               1 // 逆时针
@@ -115,19 +101,27 @@ typedef struct
 #define T1_FREQ           2000000 // 频率ft值
 
 void limit_switch_init(void);
-void AxisMoveRel(int32_t i,int32_t step, uint32_t accel, uint32_t decel, uint32_t speed);
 void AxisMove(int32_t Axis,int32_t step, uint32_t accel, uint32_t decel, int32_t speed);
 void TIM1_PWM_Init(void);
 void timopen(int8_t Axis);
 void timdisable(int8_t Axis);
 void limitswitch(void);
-void Step_Motor_Contrl(uint32_t *accel,uint32_t *decel,int32_t *speed,int32_t *pulse_num);
+void Step_Motor_Contrl(uint32_t accel,uint32_t decel,int32_t speed,int32_t *pulse_num);
+void Step_Motor_Contrl_Alone(uint8_t Num,uint32_t accel,uint32_t decel,int32_t speed,int32_t pulse_num);
 void TIM1_CC_IRQHandler(void);
-void Step_Motor_Init(uint32_t *accel,uint32_t *decel,int32_t *speed,int32_t *pulse_num);
+void Step_Motor_Init(uint32_t accel,uint32_t decel,int32_t speed,int32_t *pulse_num);
 void MOVE_INIT(void);
-void MOVE_1_(void);
-void MOVE_2_(void);
+void MOVE_1_(void);	
+void MOVE_2_(void);	
+void MOVE_3_(void);
 void EXTI_INIT(void);
+void EXTI_INIT2(void);
+void Step_Motor_Contrl2(uint32_t accel,uint32_t decel,int32_t speed,int32_t *pulse_num);
+
+uint8_t limitsw_Num(uint8_t Num);
+void Step_Motor_Init_Alone(uint8_t Num,uint32_t accel,uint32_t decel,int32_t speed,int32_t pulse_num);
+void MOVE_INIT2(void);
+void MOVE_INIT3(void);
 
 #endif
 

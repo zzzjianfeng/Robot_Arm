@@ -27,15 +27,15 @@
 ".\objects\stm32f10x_wwdg.o"
 ".\objects\stm32f10x_it.o"
 ".\objects\main.o"
-".\objects\bug.o"
 ".\objects\conveyor.o"
 ".\objects\delay.o"
 ".\objects\dial.o"
 ".\objects\driver.o"
 ".\objects\mg996r.o"
-".\objects\oled_1.o"
+".\objects\oled.o"
 ".\objects\sys.o"
 ".\objects\usart.o"
+".\objects\dsp_key.o"
 --library_type=microlib --strict --scatter ".\Objects\STM32F103.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

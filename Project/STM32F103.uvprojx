@@ -551,11 +551,6 @@
           <GroupName>Include</GroupName>
           <Files>
             <File>
-              <FileName>Bug.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\include\Bug.h</FilePath>
-            </File>
-            <File>
               <FileName>Conveyor.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\include\Conveyor.h</FilePath>
@@ -605,16 +600,16 @@
               <FileType>5</FileType>
               <FilePath>..\include\Usart.h</FilePath>
             </File>
+            <File>
+              <FileName>dsp_key.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\include\dsp_key.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>src</GroupName>
           <Files>
-            <File>
-              <FileName>Bug.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\src\Bug.c</FilePath>
-            </File>
             <File>
               <FileName>Conveyor.c</FileName>
               <FileType>1</FileType>
@@ -654,6 +649,11 @@
               <FileName>Usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\Usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>dsp_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\dsp_key.c</FilePath>
             </File>
           </Files>
         </Group>

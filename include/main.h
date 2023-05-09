@@ -10,5 +10,6 @@
 #include "driver.h"
 #include "MG996R.h"
 #include "delay.h"
+#include "dsp_key.h"
 
 #endif

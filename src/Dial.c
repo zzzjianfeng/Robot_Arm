@@ -1,7 +1,6 @@
 #include "Dial.h"
 
 uint32_t Point=0;
-extern uint8_t temp_Arm;
 
 void Dial_Init(uint16_t arr,uint16_t psc)
 {
@@ -83,7 +82,6 @@ void TIM8_UP_IRQHandler(void)
         if (Point>Dial_One_round)
         {
             Set_Dial_PWM(0);
-            // temp_Arm=1;
         }
         TIM_ClearITPendingBit(Dial_TIM,TIM_IT_Update);
     }
@@ -98,9 +96,9 @@ int8_t Min_square(int8_t *a)
     {
         arr[q]=a[q];
     }
-    if(Dial[2]==0){arr[0]=0;}
-    if(Dial[5]==0){arr[1]=0;}
-    if(Dial[7]==0){arr[2]=0;}
+    if(Dial[square1]==0){arr[0]=0;}
+    if(Dial[square2]==0){arr[1]=0;}
+    if(Dial[square3]==0){arr[2]=0;}
     for ( i = 1; i < 3; i++)
     {
         for ( j = 0; j < 3-i; j++)
@@ -146,8 +144,8 @@ int8_t Min_cylinder(int8_t *a)
     {
         arr[q]=a[q];
     }
-    if(Dial[0]==0){arr[0]=0;}
-    if(Dial[4]==0){arr[1]=0;}
+    if(Dial[cylinder1]==0){arr[0]=0;}
+    if(Dial[cylinder2]==0){arr[1]=0;}
     for ( i = 1; i < 2; i++)
     {
         for ( j = 0; j < 2-i; j++)
@@ -187,9 +185,9 @@ int8_t Min_triangle(int8_t *a)
     {
         arr[q]=a[q];
     }
-    if(Dial[1]==0){arr[0]=0;}
-    if(Dial[3]==0){arr[1]=0;}
-    if(Dial[6]==0){arr[2]=0;}
+    if(Dial[triangle1]==0){arr[0]=0;}
+    if(Dial[triangle2]==0){arr[1]=0;}
+    if(Dial[triangle3]==0){arr[2]=0;}
     for ( i = 1; i < 3; i++)
     {
         for ( j = 0; j < 3-i; j++)
