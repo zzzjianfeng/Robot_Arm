@@ -15,8 +15,6 @@ uint8_t temp_Arm_triangle=0;
 uint8_t eye=0;/* 用于判断是否正确接收到Openmv的指令 */
 
 uint8_t eye2=0;/* 用于判断是否正确放入 */
-
-extern speedRampData srd[4];
   
 int main()
 {
@@ -27,13 +25,11 @@ int main()
     Conveyor_INIT();
     EXTI_INIT();
     // EXTI_INIT2();
-    MG996R1_Init(20000, 72);
-    MG996R2_Init(20000, 72);
+    Servo_Init();
     Dial_Init(100,72);
 	limit_switch_init();
 	TIM1_PWM_Init();
-	TIM1->BDTR = TIM_BDTR_MOE;
-    while (Key_Scan(GPIOA_PORT,KEY_GPIO_PIN)==KEY_ON)
+    while (Key_Scan(KEY_GPIO_PORT,KEY_GPIO_PIN)==KEY_ON)
     {
         /* code */
     }
@@ -51,13 +47,13 @@ int main()
         /* 机械臂动作 */
         if (temp_Arm==1)
         {
-            MOVE_INIT();
+            MOVE_INIT3();
             if (temp_Arm_square==1)
-            {MOVE_2_();eye2=1;}
+            {MOVE_3_();eye2=1;}
             else if (temp_Arm_triangle==1)
             {MOVE_1_();eye2=1;}
             else if (temp_Arm_cylinder==1)
-            {MOVE_3_();eye2=1;}
+            {MOVE_2_();eye2=1;}
             temp_Arm=0;temp_Arm_square=0;temp_Arm_triangle=0;temp_Arm_cylinder=0;
             Conveyor_ON();
         }
@@ -97,7 +93,7 @@ int main()
                 Dial[Dial_Now]=0;
                 if (cylinder_min==0)
                 {
-                    goto first;
+                    goto first;        //如果第一个物件是圆就不动
                 }
             }
             else if (strcmp(RxPacket,"3")==0)

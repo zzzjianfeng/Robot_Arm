@@ -51,6 +51,8 @@ void SysTick_Handler(void)
 //当使用ucos的时候,此函数会初始化ucos的时钟节拍
 //SYSTICK的时钟固定为HCLK时钟的1/8
 //SYSCLK:系统时钟
+
+/*延时函数初始化*/
 void delay_init()	 
 {
 

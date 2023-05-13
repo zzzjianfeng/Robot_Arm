@@ -2,29 +2,29 @@
 
 uint32_t Point=0;
 
+/*转盘初始化*/
 void Dial_Init(uint16_t arr,uint16_t psc)
 {
 	GPIO_InitTypeDef GPIO_InitStruct;
-    /*Dial CLOCK INIT*/
     RCC_APB2PeriphClockCmd(Dial_CLK,ENABLE);
-    /*Dial EA GPIO INIT*/
+   
     GPIO_InitStruct.GPIO_Mode=GPIO_Mode_Out_PP;
     GPIO_InitStruct.GPIO_Pin=Dial_EN_PIN;
     GPIO_InitStruct.GPIO_Speed=GPIO_Speed_50MHz;
     GPIO_Init(Dial_PORT,&GPIO_InitStruct);
     GPIO_ResetBits(Dial_PORT,Dial_EN_PIN);
-    /*Dial DIR GPIO INIT*/
+    
     GPIO_InitStruct.GPIO_Mode=GPIO_Mode_Out_PP;
     GPIO_InitStruct.GPIO_Pin=Dial_DIR_PIN;
     GPIO_InitStruct.GPIO_Speed=GPIO_Speed_50MHz;
     GPIO_Init(Dial_PORT,&GPIO_InitStruct);
     GPIO_ResetBits(Dial_PORT,Dial_DIR_PIN);
-    /*Dial STEP GPIO INIT*/
+    
     GPIO_InitStruct.GPIO_Mode=GPIO_Mode_AF_PP;
     GPIO_InitStruct.GPIO_Pin=Dial_STEP_PIN;
     GPIO_InitStruct.GPIO_Speed=GPIO_Speed_50MHz;
     GPIO_Init(Dial_PORT,&GPIO_InitStruct);
-    /*Dial Tim Init*/
+    
     RCC_APB2PeriphClockCmd(Dial_TIM_CLK,ENABLE);
 
     TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStruct;
@@ -58,17 +58,17 @@ void Dial_Init(uint16_t arr,uint16_t psc)
 
     TIM_Cmd(Dial_TIM,ENABLE);
 }
-
+/*转盘状态取反*/
 void Dial_TOGGLE(void)
 {
     Dial_PORT->ODR^=Dial_DIR_PIN;
 }
-
+/*设置脉冲数*/
 void Set_Point(uint32_t point)
 {
     Point=point;
 }
-
+/*设置占空比*/
 void Set_Dial_PWM(uint8_t PWM)
 {
     TIM_SetCompare3(Dial_TIM,PWM);
@@ -86,7 +86,7 @@ void TIM8_UP_IRQHandler(void)
         TIM_ClearITPendingBit(Dial_TIM,TIM_IT_Update);
     }
 }
-
+/*计算到达正方体路径最小值*/
 int8_t Min_square(int8_t *a)
 {
     uint8_t i=0,j=0,k=0,q=0;
@@ -134,7 +134,7 @@ int8_t Min_square(int8_t *a)
         else return arr[2];
     }
 }
-
+/*计算到达圆柱路径最小值*/
 int8_t Min_cylinder(int8_t *a)
 {
     uint8_t i=0,j=0,k=0,q=0;
@@ -175,7 +175,7 @@ int8_t Min_cylinder(int8_t *a)
         else return arr[1];
     }
 }
-
+/*计算到达三角路径最小值*/
 int8_t Min_triangle(int8_t *a)
 {
     uint8_t i=0,j=0,k=0,q=0;
@@ -223,19 +223,19 @@ int8_t Min_triangle(int8_t *a)
         else return arr[2];
     }
 }
-
+/*物件状态更新*/
 void Dial_State_Update(void)
 {
     cylinder[0]=Dial_Now-cylinder1;cylinder[1]=Dial_Now-cylinder2;
     triangle[0]=Dial_Now-triangle1;triangle[1]=Dial_Now-triangle2;triangle[2]=Dial_Now-triangle3;
     square[0]=Dial_Now-square1;square[1]=Dial_Now-square2;square[2]=Dial_Now-square3;
 }
-
+/*转盘正转*/
 void foreward(void)
 {
     GPIO_ResetBits(Dial_PORT,Dial_DIR_PIN);
 }
-
+/*转盘反转*/
 void reversal(void)
 {
     GPIO_SetBits(Dial_PORT,Dial_DIR_PIN);

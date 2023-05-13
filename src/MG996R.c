@@ -59,7 +59,7 @@ void MG996R2_Init(uint16_t arr,uint16_t psc) //arr=20000-1,psc=72-1
 
     TIM_Cmd(MG996R2_Tim,ENABLE);
 }
-
+/*¶æ»ú³õÊ¼»¯*/
 void Servo_Init(void)
 {
 	MG996R1_Init(20000, 72);

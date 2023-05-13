@@ -1,9 +1,4 @@
 #include "driver.h"
-#include "Usart.h"
-#include "Conveyor.h"
-#include "Dial.h"
-
-// uint32_t STEP=0;
 
 extern uint8_t temp_Arm;
 
@@ -12,9 +7,13 @@ extern uint8_t eye;
 extern uint8_t eye2;
 
 static uint8_t xw1=0,xw2=0,xw3=0,xw4=0;
-uint32_t acc=20000;
-int32_t spd=40000;
-uint32_t dec=20000;
+uint32_t acc=10000;
+int32_t spd=30000;
+uint32_t dec=10000;
+
+uint32_t acc2=6000;
+int32_t spd2=10000;
+uint32_t dec2=6000;
 
 uint32_t Init_acc=3000;
 int32_t Init_spd=6000;
@@ -25,47 +24,60 @@ int32_t Init[4]={35800,-16000,-16000,16000};
 int32_t Init3[4]={35800,16000,-16000,-16000};
 int32_t Init2[4]={-400,1,1,1};
 
-// int32_t MOVE1[4]={-44800,200,-1600,-2600};
-// int32_t MOVE2[4]={-1,1,-1600,21700};
-int32_t MOVE2_2=2000;
-int32_t MOVE2_3=-1600;
+int32_t MOVE0_3[4]={-49800,1,1,21000};
+
+int32_t MOVE0_3_2[4]={-49800,1,1,26800};
+
+// int32_t MOVE_zfx[4]={-44800,200,-1600,-2600};
+// int32_t MOVE2[4]={-49800,2000,-1600,21700};
+/*正方形收尾动作*/
+// int32_t MOVEsw[4]={-0,0,3600,-21700};
+/*三角和圆收尾动作*/
+// int32_t MOVEsw2[4]={-1,1,1200,-21700};
+
+// int32_t MOVE_sj[4]={-44800,2800,-800,-7800};
+// int32_t MOVE_yuan[4]={-44800,2200,-800,-7800};
+// int32_t MOVE_B[4]={-49800,600,1200,26500};
+
+int32_t MOVE2_2=1600;
+int32_t MOVE2_3=-1700;
 int32_t MOVE2_4=21700;
 
 int32_t MOVE1_1=-44800;
-int32_t MOVE1_2=200;
-int32_t MOVE1_3=-1600;
-int32_t MOVE1_4=-2600;
+int32_t MOVE1_2=1050;
+int32_t MOVE1_3=-1400;
+int32_t MOVE1_4=-2300;
 int32_t MOVE4=26800;
 int32_t MOVE3=-49800;
 int32_t MOVE5=58000;
 int32_t MOVE6_3=3600;
 /*抖动*/
-int32_t MOVE7[4]={1,300,300,-300};
-int32_t MOVE7_1[4]={1,600,600,-600};
-int32_t MOVE8[4]={1,-600,-600,600};
-int32_t MOVE8_1[4]={1,-300,-300,300};
+int32_t MOVE7[4]={1,1,200,-1600};
+int32_t MOVE7_1[4]={1,1,400,-1400};
+int32_t MOVE8[4]={1,-1,-400,1400};
+int32_t MOVE8_1[4]={1,-1,-200,1600};
 
-int32_t MOVE7a[4]={1,1,300,-300};
-int32_t MOVE7_1a[4]={1,1,600,-600};
-int32_t MOVE8a[4]={1,1,-600,600};
-int32_t MOVE8_1a[4]={1,1,-300,300};
+int32_t MOVE7a[4]={1,300,200,-1600};
+int32_t MOVE7_1a[4]={1,600,400,-1400};
+int32_t MOVE8a[4]={1,-600,-400,1400};
+int32_t MOVE8_1a[4]={1,-300,-200,1600};
 
-int32_t MOVE9_4=-21700;
+int32_t MOVE9_4=-15000;
+int32_t MOVE9_5=-3000;
 
 int32_t MOVE_A_1=-44800;
-int32_t MOVE_A_2=2800;
-int32_t MOVE_A_2_2=2200;
-int32_t MOVE_A_3=-800;
-int32_t MOVE_A_3_2=-800;
-int32_t MOVE_A_4=-7800;
-// int32_t MOVE_A[4]={-44800,2800,-800,-11400};
+int32_t MOVE_A_2=2700;
+int32_t MOVE_A_2_2=2800;
+int32_t MOVE_A_3=-1100;
+int32_t MOVE_A_3_2=-1000;
+int32_t MOVE_A_4=-8300;
+int32_t MOVE_A_4_2=-8200;
 
-// int32_t MOVE_B[4]={-1,1,1200,26500};
-int32_t MOVE_B_2=1200;
-int32_t MOVE_B_2_2=600;
-int32_t MOVE_B_3=1000;
+int32_t MOVE_B_2=100;
+int32_t MOVE_B_2_2=-200;
+int32_t MOVE_B_3=1300;
 int32_t MOVE_B_3_2=1200;
-int32_t MOVE_B_4=26500;
+int32_t MOVE_B_4=27000;
 int32_t MOVE_D_3=1200;
 
 typedef struct {
@@ -206,7 +218,7 @@ static void STEPMOTOR4_Driver_Init(void)
 
 
 }
-
+/*光电开关初始化*/
 void EXTI_INIT(void)
 {
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE,ENABLE);
@@ -289,7 +301,7 @@ void EXTI9_5_IRQHandler(void)
         EXTI_ClearITPendingBit(EXTI_Line5);
     }
 }
-
+/*限位开关初始化*/
 void limit_switch_init(void)
 {
 	GPIO_InitTypeDef  GPIO_InitStructure;
@@ -312,7 +324,7 @@ static void STEPMOTOR_NVIC_Init(void)
 	NVIC_Init(&NVIC_InitStructure);
 }
 
-
+/*机械臂步进电机初始化*/
 void TIM1_PWM_Init(void)
 {	
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
@@ -362,6 +374,7 @@ void TIM1_PWM_Init(void)
 
 	TIM_ARRPreloadConfig(TIM1, ENABLE); 
 	TIM_Cmd(TIM1,ENABLE);   
+	TIM1->BDTR = TIM_BDTR_MOE;
  }
 
  
@@ -552,7 +565,6 @@ void Step_Motor_Contrl(uint32_t accel,uint32_t decel,int32_t speed,int32_t *puls
 	AxisMove(3,pulse_num[3],accel,decel,speed);
     while(1)
 	{
-		// 				OLED_ShowSignedNum(1,1,srd[1].min_delay,5);
 		// OLED_ShowSignedNum(1,8,position[0],5);
 		// OLED_ShowSignedNum(2,1,position[1],5);
 		// OLED_ShowSignedNum(3,1,position[2],5);
@@ -564,16 +576,30 @@ void Step_Motor_Contrl(uint32_t accel,uint32_t decel,int32_t speed,int32_t *puls
 
 void Step_Motor_Contrl2(uint32_t accel,uint32_t decel,int32_t speed,int32_t *pulse_num)
 {
-	AxisMove(2,pulse_num[2],accel,decel,speed);
+	AxisMove(1,pulse_num[1],accel,decel,speed);
 	AxisMove(3,pulse_num[3],accel,decel,speed);
     while(1)
 	{
-		// 				OLED_ShowSignedNum(1,1,srd[1].min_delay,5);
 		// OLED_ShowSignedNum(1,8,position[0],5);
 		// OLED_ShowSignedNum(2,1,position[1],5);
 		// OLED_ShowSignedNum(3,1,position[2],5);
 		// OLED_ShowSignedNum(4,1,position[3],5);
-		if((srd[1].run_state == STOP)&&(srd[2].run_state == STOP)&&(srd[3].run_state == STOP))
+		if((srd[1].run_state == STOP)&&(srd[3].run_state == STOP))
+		{return;}
+	}
+}
+
+void Step_Motor_Contrl1_4(uint32_t accel,uint32_t decel,int32_t speed,int32_t *pulse_num)
+{
+	AxisMove(3,pulse_num[3],accel,decel,speed);
+	AxisMove(0,pulse_num[0],accel,decel,speed);
+    while(1)
+	{
+		// OLED_ShowSignedNum(1,8,position[0],5);
+		// OLED_ShowSignedNum(2,1,position[1],5);
+		// OLED_ShowSignedNum(3,1,position[2],5);
+		// OLED_ShowSignedNum(4,1,position[3],5);
+		if((srd[0].run_state == STOP)&&(srd[3].run_state == STOP))
 		{return;}
 	}
 }
@@ -584,7 +610,6 @@ void Step_Motor_Contrl_Alone(uint8_t Num,uint32_t accel,uint32_t decel,int32_t s
 	AxisMove(Num,pulse_num,accel,decel,speed);
 	while(1)
 	{
-		// 				OLED_ShowSignedNum(1,1,srd[1].min_delay,5);
 		// OLED_ShowSignedNum(1,8,position[0],5);
 		// OLED_ShowSignedNum(2,1,position[1],5);
 		// OLED_ShowSignedNum(3,1,position[2],5);
@@ -596,20 +621,15 @@ void Step_Motor_Contrl_Alone(uint8_t Num,uint32_t accel,uint32_t decel,int32_t s
 
 void Step_Motor_Init_Alone(uint8_t Num,uint32_t accel,uint32_t decel,int32_t speed,int32_t pulse_num)
 {
-	// init:
 	AxisMove(Num,pulse_num,accel,decel,speed);
-	// STEP=pulse_num;
 	while(1)
 	{
-		// 				OLED_ShowSignedNum(1,1,srd[1].min_delay,5);
 		// OLED_ShowSignedNum(1,8,position[0],5);
 		// OLED_ShowSignedNum(2,1,position[1],5);
 		// OLED_ShowSignedNum(3,1,position[2],5);
 		// OLED_ShowSignedNum(4,1,position[3],5);
-		// delay_ms(...);
 		if((limitsw_Num(Num)==1)||(srd[Num].run_state == STOP))
 		{return;}
-		// else goto init;
 	}
 }
 
@@ -618,11 +638,9 @@ void Step_Motor_Init(uint32_t accel,uint32_t decel,int32_t speed,int32_t *pulse_
 	AxisMove(1,pulse_num[1],accel,decel,speed);
 	AxisMove(2,pulse_num[2],accel,decel,speed);
 	AxisMove(3,pulse_num[3],accel,decel,speed);
-	// delay_ms(100);
 	AxisMove(0,pulse_num[0],accel,decel,speed);
     while(1)
 	{
-		// 				OLED_ShowSignedNum(1,1,srd[1].min_delay,5);
 		// OLED_ShowSignedNum(1,8,position[0],5);
 		// OLED_ShowSignedNum(2,1,position[1],5);
 		// OLED_ShowSignedNum(3,1,position[2],5);
@@ -635,7 +653,7 @@ void Step_Motor_Init(uint32_t accel,uint32_t decel,int32_t speed,int32_t *pulse_
 /* 正方形抓取动作 */
 void MOVE_1_(void)
 {
-	delay_ms(100);
+	// delay_ms(100);
 	Step_Motor_Contrl_Alone(1,acc,dec,spd,MOVE1_2);
 	delay_ms(20);
 	Step_Motor_Contrl_Alone(2,acc,dec,spd,MOVE1_3);
@@ -650,29 +668,31 @@ void MOVE_1_(void)
 	delay_ms(20);
 	Step_Motor_Contrl_Alone(1,acc,dec,spd,MOVE2_2);
 	Step_Motor_Contrl_Alone(2,acc,dec,spd,MOVE2_3);
-	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE2_4);
-	Step_Motor_Contrl_Alone(0,acc,dec,spd,MOVE3);
+	// Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE2_4);
+	// Step_Motor_Contrl_Alone(0,acc,dec,spd,MOVE3);
+	Step_Motor_Contrl1_4(acc2,dec2,spd2,MOVE0_3);
 	delay_ms(20);
-	Step_Motor_Contrl2(acc,dec,spd,MOVE7);
+	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE8[3]);
 	delay_ms(20);
-	Step_Motor_Contrl2(acc,dec,spd,MOVE8);
+	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE7[3]);
 	delay_ms(20);
-	Step_Motor_Contrl2(acc,dec,spd,MOVE7_1);
+	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE8_1[3]);
 	delay_ms(20);
-	Step_Motor_Contrl2(acc,dec,spd,MOVE8_1);
+	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE7_1[3]);
 	delay_ms(20);
 	Servo_Run(0);
 	delay_ms(20);
 	Step_Motor_Contrl_Alone(0,acc,dec,spd,MOVE5);
 	Step_Motor_Contrl_Alone(2,acc,dec,spd,MOVE6_3);
 	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE9_4);
+	Step_Motor_Contrl_Alone(1,acc,dec,spd,MOVE9_5);
 	delay_ms(20);
 }
 
 /* 三角的抓取动作 */
 void MOVE_2_(void)
 {
-	delay_ms(100);
+	// Step_Motor_Contrl(acc,dec,spd,MOVE_sj);
 	Step_Motor_Contrl_Alone(1,acc,dec,spd,MOVE_A_2);
 	delay_ms(20);
 	Step_Motor_Contrl_Alone(2,acc,dec,spd,MOVE_A_3_2);
@@ -687,33 +707,35 @@ void MOVE_2_(void)
 	delay_ms(20);
 	Step_Motor_Contrl_Alone(1,acc,dec,spd,MOVE_B_2_2);
 	Step_Motor_Contrl_Alone(2,acc,dec,spd,MOVE_B_3_2);
-	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE_B_4);
-	Step_Motor_Contrl_Alone(0,acc,dec,spd,MOVE3);
+	// Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE_B_4);
+	// Step_Motor_Contrl_Alone(0,acc,dec,spd,MOVE3);
+	Step_Motor_Contrl1_4(acc2,dec2,spd2,MOVE0_3_2);
 	delay_ms(20);
-	Step_Motor_Contrl2(acc,dec,spd,MOVE8a);
+	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE8a[3]);
 	delay_ms(20);
-	Step_Motor_Contrl2(acc,dec,spd,MOVE7a);
+	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE7a[3]);
 	delay_ms(20);
-	Step_Motor_Contrl2(acc,dec,spd,MOVE8_1a);
+	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE8_1a[3]);
 	delay_ms(20);
-	Step_Motor_Contrl2(acc,dec,spd,MOVE7_1a);
+	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE7_1a[3]);
 	delay_ms(20);
 	Servo_Run(0);
 	delay_ms(20);
 	Step_Motor_Contrl_Alone(0,acc,dec,spd,MOVE5);
 	Step_Motor_Contrl_Alone(2,acc,dec,spd,MOVE_D_3);
 	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE9_4);
+	Step_Motor_Contrl_Alone(1,acc,dec,spd,MOVE9_5);
 	delay_ms(20);
 }
 /* 圆的抓取动作 */
 void MOVE_3_(void)
 {
-	delay_ms(100);
+	// Step_Motor_Contrl(acc,dec,spd,MOVE_sj);
 	Step_Motor_Contrl_Alone(1,acc,dec,spd,MOVE_A_2_2);
 	delay_ms(20);
-	Step_Motor_Contrl_Alone(2,acc,dec,spd,MOVE_A_3_2);
+	Step_Motor_Contrl_Alone(2,acc,dec,spd,MOVE_A_3);
 	delay_ms(20);
-	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE_A_4);
+	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE_A_4_2);
 	delay_ms(20);
 	Step_Motor_Contrl_Alone(0,acc,dec,spd,MOVE_A_1);
 	delay_ms(20);
@@ -721,24 +743,26 @@ void MOVE_3_(void)
 	delay_ms(20);
 	Step_Motor_Contrl_Alone(0,acc,dec,spd,MOVE4);
 	delay_ms(20);
-	Step_Motor_Contrl_Alone(1,acc,dec,spd,MOVE_B_2_2);
-	Step_Motor_Contrl_Alone(2,acc,dec,spd,MOVE_B_3_2);
-	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE_B_4);
-	Step_Motor_Contrl_Alone(0,acc,dec,spd,MOVE3);
+	Step_Motor_Contrl_Alone(1,acc,dec,spd,MOVE_B_2);
+	Step_Motor_Contrl_Alone(2,acc,dec,spd,MOVE_B_3);
+	// Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE_B_4);
+	// Step_Motor_Contrl_Alone(0,acc,dec,spd,MOVE3);
+	Step_Motor_Contrl1_4(acc2,dec2,spd2,MOVE0_3_2);
 	delay_ms(20);
-	Step_Motor_Contrl2(acc,dec,spd,MOVE8);
+	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE8a[3]);
 	delay_ms(20);
-	Step_Motor_Contrl2(acc,dec,spd,MOVE7);
+	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE7a[3]);
 	delay_ms(20);
-	Step_Motor_Contrl2(acc,dec,spd,MOVE8_1);
+	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE8_1a[3]);
 	delay_ms(20);
-	Step_Motor_Contrl2(acc,dec,spd,MOVE7_1);
+	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE7_1a[3]);
 	delay_ms(20);
 	Servo_Run(0);
 	delay_ms(20);
 	Step_Motor_Contrl_Alone(0,acc,dec,spd,MOVE5);
 	Step_Motor_Contrl_Alone(2,acc,dec,spd,MOVE_D_3);
 	Step_Motor_Contrl_Alone(3,acc,dec,spd,MOVE9_4);
+	Step_Motor_Contrl_Alone(1,acc,dec,spd,MOVE9_5);
 	delay_ms(20);
 }
 
@@ -756,26 +780,19 @@ void MOVE_INIT(void)
 	Step_Motor_Init_Alone(2,Init_acc,Init_dec,Init_spd,Init2[2]);
 	Step_Motor_Init_Alone(1,Init_acc,Init_dec,Init_spd,Init2[1]);
 }
-
+/*开机动作*/
 void MOVE_INIT3(void)
 {
 	xw1=0;xw2=0;xw3=0;xw4=0;
 	Servo_Run(0);
 	delay_ms(20);
 	Step_Motor_Init_Alone(0,Init_acc,Init_dec,Init_spd,Init2[0]);
-	// Step_Motor_Init_Alone(3,Init_acc,Init_dec,Init_spd,Init2[3]);
-	// Step_Motor_Init_Alone(2,Init_acc,Init_dec,Init_spd,Init2[2]);
-	// Step_Motor_Init_Alone(1,Init_acc,Init_dec,Init_spd,Init2[1]);
-	// delay_ms(20);
-	// Step_Motor_Contrl2(Init_acc,Init_dec,Init_spd,Init2);
 	delay_ms(20);
 	Step_Motor_Init(Init_acc,Init_dec,Init_spd,Init3);
 	delay_ms(20);
-	// Step_Motor_Contrl2(Init_acc,Init_dec,Init_spd,Init2);
 	Step_Motor_Init_Alone(3,Init_acc,Init_dec,Init_spd,Init2[3]);
 	Step_Motor_Init_Alone(2,Init_acc,Init_dec,Init_spd,Init2[2]);
 	Step_Motor_Init_Alone(1,Init_acc,Init_dec,Init_spd,Init2[1]);
-	// delay_ms(20);
 }
 
 void MOVE_INIT2(void)
@@ -956,13 +973,6 @@ void TIM1_CC_IRQHandler(void)
         if(srd[Axis].accel_count >= 0)
         {
 		srd[Axis].run_state = STOP;
-		step_count[Axis] = 0; 
-        rest[Axis] = 0; 
-        last_accel_delay[Axis] = 0;
-        srd[Axis].accel_count = 0;
-        srd[Axis].step_delay = 0;
-        srd[Axis].min_delay = 0;
-		timdisable(Axis);
         }
         break;
     }

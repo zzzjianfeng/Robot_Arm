@@ -10,6 +10,9 @@
 #include <string.h>
 #include "MG996R.h"
 #include "Conveyor.h"
+#include "Usart.h"
+#include "Conveyor.h"
+#include "Dial.h"
 
 typedef struct 
 {
@@ -122,6 +125,7 @@ uint8_t limitsw_Num(uint8_t Num);
 void Step_Motor_Init_Alone(uint8_t Num,uint32_t accel,uint32_t decel,int32_t speed,int32_t pulse_num);
 void MOVE_INIT2(void);
 void MOVE_INIT3(void);
+void Step_Motor_Contrl1_4(uint32_t accel,uint32_t decel,int32_t speed,int32_t *pulse_num);
 
 #endif
 

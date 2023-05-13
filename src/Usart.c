@@ -5,6 +5,7 @@ uint8_t RXD_ReceiveFlag;
 uint8_t RXD_ReceiveData;
 char RxPacket[100];
 
+/*串口初始化*/
 void Usart_Init(void)
 {
     RCC_APB2PeriphClockCmd(Usart_CLK,ENABLE);
